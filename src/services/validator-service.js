@@ -18,12 +18,23 @@ function validateJiraTicket(jiraTicketURL) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             console.log('beginning validateJiraTicket');
-            const response = yield axios_1.default.get(jiraTicketURL);
+            const response = yield (0, axios_1.default)({
+                baseURL: jiraTicketURL,
+                method: 'get',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Basic cmh5cy5hcm1vdXJAc2FpbnNidXJ5c2JhbmsuY28udWs6QVRBVFQzeEZmR0YwczNYbmlVcnMzeUdEazY2d3NJTHVpZk1zMXQ0dVlTN2RUM2xaLVZycHk2akw5UlJDekV1OFg0cHVhdnlyb2ZrY0JnSjB6dm5UeGZ4STBBTEM2T2NTZG1TT053NGRLMy1GcFlwOE9sdkNYdnpDVFZrMmZ4blJuZXNReEZxTFBJSWlOSnVCeUhPaUxoNW12Z1FLWW5iLTVrZGlnZndjV1V3MlhxTUQ5Z0h6VmIwPTRDQjQyOTJC',
+                },
+            });
+            const mappedFields = {
+                outageStartTime: new Date(response.data.fields.customfield_10084),
+                outageEndTime: new Date(response.data.fields.customfield_10085),
+                breakglassUser: response.data.fields.customfield_10053,
+            };
             if (response.status !== 200) {
                 throw new Error(`Jira ticket URL is not valid: ${jiraTicketURL}`);
             }
-            const { customfield_10084, customfield_10085, customfield_10053 } = response.data.fields;
-            validateCustomFields({ customfield_10084, customfield_10085, customfield_10053 });
+            validateCustomFields(mappedFields);
             return 201;
         }
         catch (error) {
@@ -36,38 +47,44 @@ exports.validateJiraTicket = validateJiraTicket;
 function validateCustomFields(customFields) {
     const currentDate = new Date();
     const usernameRegex = /sb\..*\./;
-    if (customFields.customfield_10084 > currentDate) {
-        console.error(`customfield_10084 must not be before the current date`);
-        throw new Error(`customfield_10084 must not be before the current date`);
+    console.log("Checking if outageStartTime is after the current date");
+    if (customFields.outageStartTime < currentDate) {
+        console.error(`outageStartTime must not be before the current date`);
+        throw new Error(`outageStartTime must not be before the current date`);
     }
-    if (!isValidDateTime(customFields.customfield_10084)) {
-        console.error(`customfield_10084 is not a valid datetime`);
-        throw new Error(`customfield_10084 is not a valid datetime`);
+    console.log("Checking if outageStartTime is a valid datetime");
+    if (!isValidDateTime(customFields.outageStartTime)) {
+        console.error(`outageStartTime is not a valid datetime`);
+        throw new Error(`outageStartTime is not a valid datetime`);
     }
-    if (customFields.customfield_10085 < currentDate) {
-        console.error(`customfield_10085 must not be before the current date`);
-        throw new Error(`customfield_10085 must not be before the current date`);
+    console.log("Checking if outageEndTime is after the current date");
+    if (customFields.outageEndTime < currentDate) {
+        console.error(`outageEndTime must not be before the current date`);
+        throw new Error(`outageEndTime must not be before the current date`);
     }
-    if (!isValidDateTime(customFields.customfield_10085)) {
-        console.error(`customfield_10085 is not a valid datetime`);
-        throw new Error(`customfield_10085 is not a valid datetime`);
+    console.log("Checking if outageEndTime is a valid datetime");
+    if (!isValidDateTime(customFields.outageEndTime)) {
+        console.error(`outageEndTime is not a valid datetime`);
+        throw new Error(`outageEndTime is not a valid datetime`);
     }
-    if (customFields.customfield_10085 <= customFields.customfield_10084) {
-        console.error(`customfield_10085 must be after customfield_10084`);
-        throw new Error(`customfield_10085 must be after customfield_10084`);
+    console.log("Checking if outageEndTime is after outageStartTime");
+    if (customFields.outageEndTime <= customFields.outageStartTime) {
+        console.error(`outageEndTime must be after outageStartTime`);
+        throw new Error(`outageEndTime must be after outageStartTime`);
     }
-    const timeDifference = customFields.customfield_10085.getTime() - customFields.customfield_10084.getTime();
+    console.log("Checking if outageEndTime is within 14 hours of outageStartTime");
+    const timeDifference = customFields.outageEndTime.getTime() - customFields.outageStartTime.getTime();
     const hours = timeDifference / (1000 * 60 * 60);
     if (hours > 14) {
-        console.error(`customfield_10085 must not be more than 14 hours after customfield_10084`);
-        throw new Error(`customfield_10085 must not be more than 14 hours after customfield_10084`);
+        console.error(`outageEndTime must not be more than 14 hours after outageStartTime`);
+        throw new Error(`outageEndTime must not be more than 14 hours after outageStartTime`);
     }
-    // if (!usernameRegex.test(customFields.customfield_10053)) {
-    //   console.error(`customfield_10053 must be in the format of sb.*.*`);
+    // if (!usernameRegex.test(customFields.breakglassUser)) {
+    //   console.error(`breakglassUser must be in the format of sb.*.*`);
     //   throw new Error();
     // }
-    // if (!customFields.customfield_10053.includes('username')) {
-    //   console.error(`customfield_10053 must match variable "username"`);
+    // if (!customFields.breakglassUser.includes('username')) {
+    //   console.error(`breakglassUser must match variable "username"`);
     //   throw new Error();
     // }
     return;

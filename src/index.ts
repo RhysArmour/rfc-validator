@@ -10,11 +10,9 @@ app.get('/validate', async (req, res) => {
   if(req.body === undefined){
       res.send(400);
 }
-console.log('GHOSTSSSSSSSSSSSS');
-  const result = await validateJiraTicket(req.body) 
-  console.log('HEYYYYYY HERE IS THE RESULT', result);
+  const result = await validateJiraTicket(req.body.jiraTicketUrl) 
 
-if (result !== 201) {
+if (result === 201) {
   res.send('Jira ticket is valid');
 } else {
   res.send('Jira ticket is not valid');

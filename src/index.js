@@ -22,10 +22,8 @@ app.get('/validate', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     if (req.body === undefined) {
         res.send(400);
     }
-    console.log('GHOSTSSSSSSSSSSSS');
-    const result = yield (0, validator_service_1.validateJiraTicket)(req.body);
-    console.log('HEYYYYYY HERE IS THE RESULT', result);
-    if (result !== 201) {
+    const result = yield (0, validator_service_1.validateJiraTicket)(req.body.jiraTicketUrl);
+    if (result === 201) {
         res.send('Jira ticket is valid');
     }
     else {
