@@ -1,15 +1,18 @@
 import express from 'express'
 const app = express()
 const port = 3000
-import { ValidatorService } from './services/validator-service'
+import { validateJiraTicket } from './services/validator-service'
 
-app.use('/validate', async (req, res) => {
+app.use(express.json());
+app.get('/validate', async (req, res) => {
   console.log('beginning Validation')
 
-  if(req.body == undefined){
-      return 400
+  if(req.body === undefined){
+      res.send(400);
 }
-  const result = await ValidatorService.validateJiraTicket(req.body) 
+console.log('GHOSTSSSSSSSSSSSS');
+  const result = await validateJiraTicket(req.body) 
+  console.log('HEYYYYYY HERE IS THE RESULT', result);
 
 if (result !== 201) {
   res.send('Jira ticket is valid');

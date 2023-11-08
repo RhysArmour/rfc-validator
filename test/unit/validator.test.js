@@ -14,7 +14,7 @@ jest.mock('axios');
 describe('validatorService', () => {
     it('should validate a valid Jira ticket URL', () => __awaiter(void 0, void 0, void 0, function* () {
         const jiraTicketURL = 'https://jira.example.com/browse/ISSUE-12345';
-        const isValid = yield validator_service_1.ValidatorService.validateJiraTicket(jiraTicketURL);
+        const isValid = yield (0, validator_service_1.validateJiraTicket)(jiraTicketURL);
         expect(isValid).toBe(true);
     }));
 });

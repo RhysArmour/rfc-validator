@@ -17,7 +17,7 @@ exports.default = validatorRouter.get('/validate', (req, res) => __awaiter(void 
     if (req.body == undefined) {
         return 400;
     }
-    const result = yield validator_service_1.ValidatorService.validateJiraTicket(req.body);
+    const result = yield (0, validator_service_1.validateJiraTicket)(req.body);
     if (result !== 201) {
         res.send('Jira ticket is valid');
     }

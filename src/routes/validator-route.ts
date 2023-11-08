@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { ValidatorService } from '../services/validator-service';
+import { validateJiraTicket } from '../services/validator-service';
 
 const validatorRouter: Router = Router();
 
@@ -9,7 +9,7 @@ export default validatorRouter.get('/validate', async (req: Request, res: Respon
     if(req.body == undefined){
         return 400
  }
-    const result = await ValidatorService.validateJiraTicket(req.body) 
+    const result = await validateJiraTicket(req.body) 
 
   if (result !== 201) {
     res.send('Jira ticket is valid');

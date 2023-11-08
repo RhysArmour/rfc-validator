@@ -16,12 +16,15 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const port = 3000;
 const validator_service_1 = require("./services/validator-service");
-app.use('/validate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use(express_1.default.json());
+app.get('/validate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('beginning Validation');
-    if (req.body == undefined) {
-        return 400;
+    if (req.body === undefined) {
+        res.send(400);
     }
-    const result = yield validator_service_1.ValidatorService.validateJiraTicket(req.body);
+    console.log('GHOSTSSSSSSSSSSSS');
+    const result = yield (0, validator_service_1.validateJiraTicket)(req.body);
+    console.log('HEYYYYYY HERE IS THE RESULT', result);
     if (result !== 201) {
         res.send('Jira ticket is valid');
     }
