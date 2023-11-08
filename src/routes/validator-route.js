@@ -13,6 +13,7 @@ const express_1 = require("express");
 const validator_service_1 = require("../services/validator-service");
 const validatorRouter = (0, express_1.Router)();
 exports.default = validatorRouter.get('/validate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('beginning Validation');
     if (req.body == undefined) {
         return 400;
     }

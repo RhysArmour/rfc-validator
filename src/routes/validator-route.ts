@@ -4,6 +4,7 @@ import { ValidatorService } from '../services/validator-service';
 const validatorRouter: Router = Router();
 
 export default validatorRouter.get('/validate', async (req: Request, res: Response) => {
+    console.log('beginning Validation')
 
     if(req.body == undefined){
         return 400
