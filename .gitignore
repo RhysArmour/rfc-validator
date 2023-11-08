@@ -1,0 +1,15 @@
+out.log
+.DS_Store
+node_modules/
+template-export.yaml
+**/*.zip
+.vscode
+
+# Coverage
+coverage/*
+
+# IntelliJ
+.idea
+*.iml
+
+.npmrc
