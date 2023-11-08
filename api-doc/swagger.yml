@@ -1,0 +1,130 @@
+openapi: 3.0.0
+info:
+  title: Sainsburys Bank Omni Channel Flag Events
+  version: 1.0.2
+  description: Sainsbury's Bank Flag Events omni-channel service API definition< Note the assumption is that the client has been through a Oauth 2.0 request for an access token which should be presented in the bearer header Details of this are covered in a seperate definition.
+servers:
+  - url: "https://localhost:3000/v1"
+    variables:
+      environment:
+        default: api.dev
+        enum:
+          - api.dev
+  - url: "https://localhost:3000/v1/"
+paths:
+  /login:
+    post:
+      summary: Login User
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/login"
+            examples:
+              login:
+                summary: Login
+                value:
+                  username: sb.example.example
+                  password: examplePassword
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  loginSessionId:
+                    type: string
+  /RfcValidator:
+    post:
+      summary: RFC Validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/rfcValidator"
+            examples:
+              validator:
+                summary: validation
+                value:
+                  RFCNumber: 12345
+      responses:
+        "201":
+          description: OK
+
+  /Submit:
+    post:
+      summary: submit outage request
+      parameters:
+        - $ref: "#/components/parameters/awsAccountId"
+        - $ref: "#/components/parameters/awsUsername"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/submit"
+            examples:
+              validator:
+                summary: validation
+                value:
+                  RFCNumber: 12345
+      responses:
+        "201":
+          description: OK
+components:
+  parameters:
+    awsAccountId:
+      name: awsAccountId
+      in: header
+      description: This is the role account id
+      required: true
+      schema:
+        type: string
+    awsUsername:
+      name: awsUsername
+      in: header
+      description: This is the users username
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: string
+  schemas:
+    login:
+      type: object
+      properties:
+        username:
+          description: Set upon receipt and will be available in GET responses
+          type: string
+        password:
+          description: "Date Time created, RFC 3339, section 5.6, Set upon receipt and will be available in GET responses"
+          type: string
+      required:
+        - username
+        - password
+    rfcValidator:
+      type: object
+      properties:
+        RFCNumber:
+          description: Set upon receipt and will be available in GET responses
+          type: number
+      required:
+        - rfcNumber
+  responses:
+    200Success:
+      description: Success
+      headers:
+        x-fapi-interaction-id:
+          schema:
+            type: string
+            format: uuid
+          description: This is the SB Correlation ID ( borrowed from FAPI)
