@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-export async function validateJiraTicket(jiraTicketURL: string): Promise<number> {
+export async function validateJiraTicket(jiraTicket: string): Promise<number> {
   try {
     console.log('beginning validateJiraTicket');
     const response = await axios({
-      baseURL: jiraTicketURL,
+      baseURL: `https://sb97digital.atlassian.net/rest/api/2/issue/${jiraTicket}`,
       method: 'get',
       headers: {
           "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export async function validateJiraTicket(jiraTicketURL: string): Promise<number>
     
 
     if (response.status !== 200) {
-      throw new Error(`Jira ticket URL is not valid: ${jiraTicketURL}`);
+      throw new Error(`Jira ticket URL is not valid: ${jiraTicket}`);
     }
 
     validateCustomFields(mappedFields);
